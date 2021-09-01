@@ -24,7 +24,7 @@ const seccionesHome = [
         titulo: "Track your skills",
         subtitulo: "",
         parrafo:
-            "Stack Sharer helps you keep focused on the technologies you want to learn by recording your learning progress.",
+            "eStack Sharer helps you keep focused on the technologies you want to learn by recording your learning progress.",
         svg: notesSVG,
         alt: "Man writing notes",
     },

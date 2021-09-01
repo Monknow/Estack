@@ -3,10 +3,15 @@ import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import styled from "styled-components";
 import validator from "validator";
-import firebase from "firebase";
-import { auth } from "gatsby-theme-firebase";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    updateProfile,
+} from "firebase/auth";
 import { navigate } from "gatsby";
 import slugify from "slugify";
+import slugifyConfig from "../data/slugifyConfig";
 import uniqueSlug from "unique-slug";
 import opciones from "../data/opciones";
 import AuthForm from "../components/organisms/AuthForm";
@@ -20,11 +25,7 @@ const SigninEstilizado = styled.div`
 `;
 
 const SigninPage = () => {
-    useEffect(() => {
-        if (window) {
-            window.scroll(0, 100);
-        }
-    });
+    const auth = getAuth();
 
     const crearUsuarioEnFireStore = async (
         email,
@@ -34,55 +35,31 @@ const SigninPage = () => {
         levantarMensajeDeError,
         levantarCargando
     ) => {
-        console.log(levantarCargando);
-        const db = firebase.firestore();
+        const db = getFirestore();
         const uid = uniqueSlug();
 
         try {
             levantarCargando(true);
 
-            await auth
-                .createUserWithEmailAndPassword(email, contraseña)
-                .then(async ({ user }) => {
+            await createUserWithEmailAndPassword(auth, email, contraseña).then(
+                async ({ user }) => {
                     if (user) {
-                        await user.updateProfile({ displayName: username });
+                        await updateProfile(user, { displayName: username });
                     }
-                });
+                }
+            );
 
-            await db
-                .collection("users")
-                .doc(email)
-                .set({
-                    username: username,
-                    name: nombre,
-                    email: email,
-                    uid: uid,
-                    slug: `${username}-${uid}`,
-                });
+            const usuarioRef = doc(db, "users", email);
 
-            opciones.forEach(async (value, key) => {
-                const tituloSlugified = slugify(key, {
-                    replacement: "-", // replace spaces with replacement character, defaults to `-`
-                    remove: undefined, // remove characters that match regex, defaults to `undefined`
-                    lower: true, // convert to lower case, defaults to `false`
-                    strict: true, // strip special characters except replacement, defaults to `false`
-                    locale: "vi", // language code of the locale to use
-                    trim: true, // trim leading and trailing replacement chars, defaults to `true`
-                });
-
-                await db
-                    .collection("users")
-                    .doc(email)
-                    .collection("stack")
-                    .doc(tituloSlugified)
-                    .set({
-                        title: key,
-                        uid: tituloSlugified,
-                        options: [],
-                    })
-                    .then(() => {
-                        navigate("/stack");
-                    });
+            await setDoc(usuarioRef, {
+                username: username,
+                name: nombre,
+                email: email,
+                uid: uid,
+                slug: `${username}-${uid}`,
+                stackSections: [],
+            }).then(() => {
+                navigate("/stack");
             });
         } catch (error) {
             levantarCargando(false);
@@ -134,6 +111,12 @@ const SigninPage = () => {
                 levantarMensajeDeError("Unkown error. Try later");
         }
     };
+
+    useEffect(() => {
+        if (window) {
+            window.scroll(0, 100);
+        }
+    });
 
     return (
         <SigninEstilizado>

@@ -4,13 +4,26 @@ import { Helmet } from "react-helmet";
 import { Link } from "gatsby";
 import { useState, useEffect, useContext } from "react";
 import ContextoAuth from "../context/ContextoAuth";
-import firebase from "firebase";
+import {
+    getFirestore,
+    collection,
+    doc,
+    query,
+    where,
+    getDocs,
+} from "firebase/firestore";
 import Titulo from "../components/atoms/Titulo";
 import Boton from "../components/atoms/Boton";
 import CartasStack from "../components/organisms/CartasStack";
 import Cargando from "../components/atoms/Cargando";
 
-const StackTemplateEstilizado = styled.div``;
+const StackTemplateEstilizado = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 100vh;
+`;
 
 const Header = styled.header`
     display: flex;
@@ -24,48 +37,46 @@ const Header = styled.header`
 `;
 
 const StackTemplate = ({ slug }) => {
-    const [datosUsuarioPagina, setDatosUsuarioPagina] = useState([]);
-    const [datosStackUsuarioPagina, setDatosStackUsuarioPagina] = useState([]);
+    const [datosUsuarioPagina, setDatosUsuarioPagina] = useState(null);
+    const [datosStackUsuarioPagina, setDatosStackUsuarioPagina] =
+        useState(null);
     const { isLoggedIn, profile } = useContext(ContextoAuth);
-    console.log(datosUsuarioPagina);
 
-    const db = firebase.firestore();
+    const db = getFirestore();
 
     useEffect(() => {
         const cargarStack = async (emailUsuario) => {
-            const stackUsuarioRef = db
-                .collection("users")
-                .doc(emailUsuario)
-                .collection("stack");
+            const usuarioRef = doc(db, "users", emailUsuario);
+            const stackRef = collection(usuarioRef, "stack");
 
-            await stackUsuarioRef.get().then((querySnapshot) => {
-                let stackArray = [];
+            const stackSnap = await getDocs(stackRef);
 
-                querySnapshot.forEach((seccionStack) => {
-                    if (seccionStack.exists) {
-                        stackArray = [...stackArray, seccionStack.data()];
-                    } else {
-                        // usuario.data() will be undefined in this case
-                        console.log("No such document!");
-                    }
-                });
-                setDatosStackUsuarioPagina(stackArray);
+            let stackArray = [];
+
+            stackSnap.forEach((seccionStack) => {
+                if (seccionStack.exists()) {
+                    stackArray = [...stackArray, seccionStack.data()];
+                } else {
+                    // usuario.data() will be undefined in this case
+                    console.log("No such document!");
+                }
             });
+            setDatosStackUsuarioPagina(stackArray);
         };
         const cargarUsuario = async () => {
-            const usuarioRef = db.collection("users");
-            const usuarioQuery = usuarioRef.where("slug", "==", slug);
+            const usuariosRef = collection(db, "users");
+            const usuarioQuery = query(usuariosRef, where("slug", "==", slug));
 
-            await usuarioQuery.get().then((querySnapshot) => {
-                querySnapshot.forEach((usuario) => {
-                    if (usuario.exists) {
-                        setDatosUsuarioPagina(usuario.data());
-                        cargarStack(usuario.data().email);
-                    } else {
-                        // usuario.data() will be undefined in this case
-                        console.log("No such document!");
-                    }
-                });
+            const usuariosQuerySnap = await getDocs(usuarioQuery);
+
+            usuariosQuerySnap.forEach((usuario) => {
+                if (usuario.exists()) {
+                    setDatosUsuarioPagina(usuario.data());
+                    cargarStack(usuario.data().email);
+                } else {
+                    // usuario.data() will be undefined in this case
+                    console.log("No such document!");
+                }
             });
         };
 

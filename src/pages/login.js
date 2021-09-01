@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
 import styled from "styled-components";
-import { auth } from "gatsby-theme-firebase";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { navigate } from "gatsby";
 import AuthForm from "../components/organisms/AuthForm";
 
@@ -23,12 +23,16 @@ const LoginPage = () => {
         levantarCargando
     ) => {
         try {
+            const auth = getAuth();
+
             levantarCargando(true);
-            await auth
-                .signInWithEmailAndPassword(email, contraseña)
-                .then(() => {
-                    navigate("/stack");
-                });
+            await signInWithEmailAndPassword(auth, email, contraseña).then(
+                ({ user }) => {
+                    if (user) {
+                        navigate("/stack");
+                    }
+                }
+            );
         } catch (error) {
             levantarCargando(false);
             console.log(error);

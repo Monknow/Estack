@@ -13,17 +13,19 @@ const Blob = styled.div`
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
+
+    width: clamp(100px, 70vw, 500px);
 `;
 
 const IlustracionEstilizada = styled.img`
     margin: 30px 60px;
 
-    width: clamp(100px, 70vw, 400px);
+    width: clamp(100px, 80%, 500px);
 `;
 
-const Ilustracion = ({ svg, alt, oscuro }) => {
+const Ilustracion = ({ svg, alt, oscuro, className }) => {
     return (
-        <Blob oscuro={oscuro}>
+        <Blob oscuro={oscuro} className={className}>
             <IlustracionEstilizada src={svg} alt={alt} />
         </Blob>
     );

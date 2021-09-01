@@ -1,99 +1,175 @@
 import * as React from "react";
-import { Link } from "gatsby";
 import styled from "styled-components";
-import firebase from "firebase";
-import { useContext, useEffect, useState } from "react";
+import {getFirestore, doc, getDoc, collection, getDocs, updateDoc} from "firebase/firestore";
+import {useContext, useEffect, useState} from "react";
 import ContextoAuth from "../../context/ContextoAuth";
 import opciones from "../../data/opciones";
+import OpcionesDisponibles from "../molecules/OpcionesDisponibles";
+import OpcionesAñadidas from "../molecules/OpcionesAñadidas";
 import InputStack from "../molecules/InputStack";
-import Titulo from "../atoms/Titulo";
 import Boton from "../atoms/Boton";
+import NuevaSeccion from "../atoms/NuevaSeccions";
 import Cargando from "../atoms/Cargando";
+import HeaderStack from "../molecules/HeaderStack";
+import slugify from "slugify";
+import slugifyConfig from "../../data/slugifyConfig";
 
+const StackEstilizadoEnvoltura = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-flow: column;
+
+	margin-bottom: 40vh;
+
+	width: 100%;
+`;
 const StackEstilizado = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-flow: column;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-flow: column;
+	width: 100%;
 
-    margin-bottom: 40vh;
-
-    & > h1 {
-        margin: 30px;
-    }
-`;
-
-const StackHeader = styled.header`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-flow: column nowrap;
-
-    & > * {
-        margin: 20px 0px;
-    }
-`;
-
-const LinkEstilizado = styled(Link)`
-    width: min-content;
+	& > h1 {
+		margin: 30px;
+	}
 `;
 
 const InputsStack = styled.div`
-    display: flex;
-    align-items: stretch;
-    justify-content: stretch;
-    flex-flow: row wrap;
+	display: flex;
+	align-items: stretch;
+	justify-content: stretch;
+	flex-flow: row wrap;
+
+	width: 100%;
 `;
 
 const Stack = () => {
-    const { isLoading, profile } = useContext(ContextoAuth);
-    const [datosUsuario, setDatosUsuario] = useState(null);
-    const db = firebase.firestore();
+	const opcionesKeys = Array.from(opciones.keys());
 
-    useEffect(() => {
-        const cargarOpcionesDeFirestore = async () => {
-            if (!isLoading && profile) {
-                const usuarioRef = db.collection("users").doc(profile.email);
-                await usuarioRef.get().then((usuario) => {
-                    if (usuario.exists) {
-                        setDatosUsuario(usuario.data());
-                    } else {
-                        // usuario.data() will be undefined in this case
-                        console.log("No such document!");
-                    }
-                });
-            }
-        };
-        cargarOpcionesDeFirestore();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLoading, profile]);
+	const {isLoading, profile} = useContext(ContextoAuth);
 
-    return (
-        <StackEstilizado>
-            {datosUsuario ? (
-                <div>
-                    <StackHeader>
-                        <Titulo>{datosUsuario.username}'s stack</Titulo>
-                        <LinkEstilizado to={`/users/${datosUsuario.slug}`}>
-                            <Boton>See your link</Boton>
-                        </LinkEstilizado>
-                    </StackHeader>
-                    <InputsStack>
-                        {Array.from(opciones).map(([key, value]) => {
-                            return (
-                                <InputStack
-                                    key={key}
-                                    seccion={value.title}
-                                    opciones={value.options}></InputStack>
-                            );
-                        })}
-                    </InputsStack>
-                </div>
-            ) : (
-                <Cargando />
-            )}
-        </StackEstilizado>
-    );
+	const [inputAbierto, setInputAbierto] = useState(false);
+	const [datosUsuario, setDatosUsuario] = useState(null);
+	const [empezarAGuardar, setEmpezarAGuardar] = useState(false);
+	const [seccionesAñadidas, setSeccionesAñadidas] = useState(new Set());
+	const [seccionesDisponibles, setSeccionesDisponibles] = useState(new Set(opcionesKeys));
+
+	const db = getFirestore();
+	const usuarioRef = doc(db, "users", profile.email);
+
+	const toggleInputAbierto = () => {
+		setInputAbierto(!inputAbierto);
+	};
+
+	const añadirSeccion = async (seccionParaAñadir) => {
+		if (typeof seccionParaAñadir === "string") {
+			setSeccionesAñadidas(seccionesAñadidas.add(seccionParaAñadir));
+
+			const seccionesDisponiblesSinLaSeccionParaAñadir = [...seccionesDisponibles].filter(
+				(seccionDisponible) => seccionDisponible !== seccionParaAñadir
+			);
+
+			setSeccionesDisponibles(new Set(seccionesDisponiblesSinLaSeccionParaAñadir));
+		} else if (typeof seccionParaAñadir === "object") {
+			const seccionesAñadidasActualizadas = new Set([...seccionesAñadidas, ...seccionParaAñadir]);
+
+			setSeccionesAñadidas(seccionesAñadidasActualizadas);
+
+			//Eliminar seccion que se quiere añadir del array de secciones disponibles
+			const seccionesDisponiblesSinLasSeccionesParaAñadir = await opcionesKeys.sort().filter((key) => {
+				return !seccionesAñadidasActualizadas.has(key);
+			});
+
+			setSeccionesDisponibles(new Set(seccionesDisponiblesSinLasSeccionesParaAñadir));
+		}
+	};
+
+	const eliminarSeccion = async (seccionParaEliminar) => {
+		const seccionDisponibleSet = seccionesDisponibles.add(seccionParaEliminar);
+
+		const seccionesDisponiblesAlfabeticamente = [...seccionDisponibleSet].sort();
+
+		setSeccionesDisponibles(new Set(seccionesDisponiblesAlfabeticamente));
+
+		const arrayDeSeccionesAñadidasSinLaSeccionParaEliminar = [...seccionesAñadidas].filter(
+			(seccionAñadida) => seccionAñadida !== seccionParaEliminar
+		);
+
+		setSeccionesAñadidas(new Set(arrayDeSeccionesAñadidasSinLaSeccionParaEliminar));
+
+		const seccionStackRef = doc(usuarioRef, "stack", slugify(seccionParaEliminar, slugifyConfig));
+		await updateDoc(seccionStackRef, {
+			options: [],
+		});
+	};
+
+	useEffect(() => {
+		const cargarStackDeFirestore = async () => {
+			if (!isLoading && profile) {
+				const usuarioSnap = await getDoc(usuarioRef);
+
+				if (usuarioSnap.exists()) {
+					const datosUsuario = usuarioSnap.data();
+
+					setSeccionesAñadidas(new Set(datosUsuario.stackSections));
+					setDatosUsuario(datosUsuario);
+				} else {
+					// usuario.data() will be undefined in this case
+					console.log("No such document!");
+				}
+
+				setEmpezarAGuardar(true);
+			}
+		};
+
+		cargarStackDeFirestore();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isLoading, profile]);
+
+	useEffect(() => {
+		const actualizarStack = async () => {
+			if (!isLoading && profile && empezarAGuardar) {
+				await updateDoc(usuarioRef, {
+					stackSections: [...seccionesAñadidas],
+				});
+			}
+		};
+		actualizarStack();
+	}, [seccionesAñadidas, seccionesDisponibles]);
+
+	return (
+		<StackEstilizadoEnvoltura>
+			{datosUsuario && empezarAGuardar ? (
+				<StackEstilizado>
+					<HeaderStack datosUsuario={datosUsuario} />
+					<InputsStack>
+						{[...seccionesAñadidas].map((seccion) => {
+							const valorSeccion = opciones.get(seccion);
+
+							return (
+								<InputStack
+									key={seccion}
+									seccion={seccion}
+									opciones={valorSeccion}
+									eliminarSeccion={eliminarSeccion}></InputStack>
+							);
+						})}
+						<NuevaSeccion toggleInputAbierto={toggleInputAbierto}>
+							<OpcionesDisponibles
+								opciones={seccionesDisponibles}
+								toggleInputAbierto={toggleInputAbierto}
+								añadirOpcion={añadirSeccion}
+								inputAbierto={inputAbierto}></OpcionesDisponibles>
+						</NuevaSeccion>
+					</InputsStack>
+				</StackEstilizado>
+			) : (
+				<Cargando />
+			)}
+		</StackEstilizadoEnvoltura>
+	);
 };
 
 export default Stack;

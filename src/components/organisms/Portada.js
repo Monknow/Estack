@@ -47,10 +47,10 @@ const Portada = () => {
         <PortadaEstilizada>
             <Contenido>
                 <TextoPrincipal
-                    titulo="Estack"
+                    titulo="eStack Sharer"
                     subtitulo="Share your software stack with the world"
-                    parrafo="                Put your goals on paper, track and share your skills, and
-                achieve higher levels of efficiency. Stack Sharer gives you the
+                    parrafo="Put your goals on paper, track and share your skills, and
+                achieve higher levels of efficiency. eStack Sharer gives you the
                 tools to keep your abilities on point."></TextoPrincipal>
                 <LogInShortcut></LogInShortcut>
             </Contenido>

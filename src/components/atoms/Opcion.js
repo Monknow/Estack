@@ -1,40 +1,49 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import {useState, useEffect} from "react";
 import styled from "styled-components";
 
 const OpcionInputEstilizada = styled.p`
-    display: inline-block;
-    width: max-content;
+	flex-grow: 2;
+	flex-shrink: 2;
 
-    margin: 8px;
-    border-radius: 4px;
-    padding: 5px;
-    background-color: #efecff;
+	display: inline-block;
+	width: max-content;
 
-    cursor: ${(props) => (props.pointer ? "pointer" : "default")};
+	margin: 8px;
+	border-radius: 4px;
+	padding: 10px 5px;
+
+	text-align: center;
+
+	user-select: none;
+	background-color: #efecff;
+	background-color: ${(props) => (props.clickeado ? "rgba(59, 40, 204, 0.5)" : "#efecff")};
+
+	cursor: ${(props) => (props.pointer ? "pointer" : "default")};
 `;
 
-const OpcionInput = ({ children, manejarClick, opcion }) => {
-    const [cursorPointer, setCursorPointer] = useState(false);
+const OpcionInput = ({children, manejarClick, opcion}) => {
+	const [cursorPointer, setCursorPointer] = useState(false);
+	const [clickeado, setClickeado] = useState(false);
 
-    useEffect(() => {
-        if (manejarClick) {
-            setCursorPointer(true);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+	useEffect(() => {
+		if (manejarClick) {
+			setCursorPointer(true);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-    const accionOnClick = () => {
-        if (manejarClick) {
-            manejarClick(opcion);
-        }
-    };
+	const accionOnClick = () => {
+		setClickeado(!clickeado);
 
-    return (
-        <OpcionInputEstilizada pointer={cursorPointer} onClick={accionOnClick}>
-            {children}
-        </OpcionInputEstilizada>
-    );
+		manejarClick(opcion);
+	};
+
+	return (
+		<OpcionInputEstilizada clickeado={clickeado} pointer={cursorPointer} onClick={accionOnClick}>
+			{children}
+		</OpcionInputEstilizada>
+	);
 };
 
 export default OpcionInput;

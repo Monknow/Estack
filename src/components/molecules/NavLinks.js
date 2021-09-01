@@ -1,7 +1,7 @@
 import * as React from "react";
 import { navigate, Link } from "gatsby";
 import { useContext } from "react";
-import { auth } from "gatsby-theme-firebase";
+import { getAuth, signOut } from "firebase/auth";
 import ContextoAuth from "../../context/ContextoAuth";
 import styled from "styled-components";
 import LinkNav from "../atoms/LinkNav";
@@ -44,8 +44,14 @@ const NavLinks = () => {
     const { isLoading, isLoggedIn, profile } = useContext(ContextoAuth);
 
     const manejarClickLogOut = async () => {
-        await auth.signOut();
-        navigate("/");
+        const auth = getAuth();
+        await signOut(auth)
+            .then(() => {
+                navigate("/");
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
 
     return (
@@ -54,9 +60,15 @@ const NavLinks = () => {
                 <Link to="/">
                     <Logo />
                 </Link>
-                <Link to="/stack">
-                    <Boton>Stack </Boton>
-                </Link>
+                {!isLoading && isLoggedIn ? (
+                    <Link to="/stack">
+                        <Boton>Stack</Boton>
+                    </Link>
+                ) : (
+                    <Link to="/login?message=To see your stack you must be logged">
+                        <Boton>Stack</Boton>
+                    </Link>
+                )}
             </div>
             <div>
                 {!isLoading && isLoggedIn ? (
