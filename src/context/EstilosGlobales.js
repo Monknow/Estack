@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import {createGlobalStyle} from "styled-components";
 import "../assets/fonts/fonts.css";
 
 const EstilosGlobales = createGlobalStyle`
@@ -12,6 +12,7 @@ const EstilosGlobales = createGlobalStyle`
   }
 
   body{
+    overflow-x: hidden;
     font-family: "ibm_plex_sans_thairegular";
     
     background-color: #EFECFF;
