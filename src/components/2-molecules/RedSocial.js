@@ -77,8 +77,10 @@ const RedSocial = ({keyRedSocial, valorRedSocial, eliminarOpcion, empezarAGuarda
 				const socialSnap = await getDoc(socialRef);
 
 				if (socialSnap.exists()) {
-					setRedSocialTieneLinkAdjunto(!!socialSnap.data()?.sufijoLink);
-					setSufijoLink(socialSnap.data().sufijoLink);
+					const sufijoLinkFirestore = socialSnap.data()?.sufijoLink;
+
+					setRedSocialTieneLinkAdjunto(!!sufijoLinkFirestore);
+					setSufijoLink(sufijoLinkFirestore);
 				} else {
 					await setDoc(socialRef, {title: keyRedSocial, uid: slugifiedRedSocial, sufijoLink: ""});
 				}
@@ -96,6 +98,8 @@ const RedSocial = ({keyRedSocial, valorRedSocial, eliminarOpcion, empezarAGuarda
 	const enviarSufijoLinkAFirestore = async (sufijoLinkParaEnviar) => {
 		try {
 			if (sePuedeEditar && datos) {
+				const db = getFirestore();
+
 				const usuarioRef = doc(db, "users", datos.email);
 				const socialRef = doc(usuarioRef, "social", slugifiedRedSocial);
 
@@ -111,7 +115,7 @@ const RedSocial = ({keyRedSocial, valorRedSocial, eliminarOpcion, empezarAGuarda
 			{sePuedeEditar && (
 				<div ref={setReferenceElement}>
 					<Boton
-						esqueleto={!sufijoLink}
+						esqueleto={!sePuedeEditar}
 						secundario
 						onClick={() => {
 							setSufijoLink("");

@@ -7,6 +7,7 @@ import HeaderStack from "../components/3-cells/HeaderStack";
 import Stack from "../components/5-organisms/Stack";
 import RedesSociales from "../components/4-organs/RedesSociales";
 import Cargando from "../components/1-atoms/Cargando";
+import NoEncontrado from "../components/2-molecules/NoEncontrado";
 
 const StackTemplateEstilizado = styled.div`
 	display: flex;
@@ -22,14 +23,20 @@ const StackTemplate = () => {
 
 	return (
 		<StackTemplateEstilizado>
-			{!cargando && datos ? (
+			{!cargando ? (
 				<div>
-					<Helmet>
-						<title>{`${datos.username}'s stack`}</title>
-					</Helmet>
-					<HeaderStack />
-					<RedesSociales />
-					<Stack />
+					{datos ? (
+						<div>
+							<Helmet>
+								<title>{`${datos.username}'s stack`}</title>
+							</Helmet>
+							<HeaderStack />
+							<RedesSociales />
+							<Stack />
+						</div>
+					) : (
+						<NoEncontrado elementoNoEncontrado="User" />
+					)}
 				</div>
 			) : (
 				<div>

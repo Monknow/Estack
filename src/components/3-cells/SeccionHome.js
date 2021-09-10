@@ -9,7 +9,7 @@ const SeccionHomeEstilizada = styled.div`
 	align-items: center;
 	flex-flow: ${(props) => (props.align === "left" ? "row" : "row-reverse")} wrap;
 
-	min-height: 100vh;
+	min-height: clamp(500px, 70vh, 800px);
 
 	background-color: ${(props) => (props.oscuro ? "#3B28CC" : "#EFECFF")};
 

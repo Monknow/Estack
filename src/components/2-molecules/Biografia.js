@@ -53,7 +53,7 @@ const SinEditarBiografiaEstilizada = styled.p`
 	}
 `;
 
-const Biografia = ({esqueleto, texto}) => {
+const Biografia = ({texto}) => {
 	const {profile, isLoading} = useContext(ContextoAuth);
 	const {datos, sePuedeEditar, cargando} = useContext(ContextoDatosUsuario);
 
@@ -92,6 +92,8 @@ const Biografia = ({esqueleto, texto}) => {
 	const enviarBiografiaAFirestore = async () => {
 		try {
 			if (sePuedeEditar && !isLoading && profile) {
+				const db = getFirestore();
+
 				const usuarioRef = doc(db, "users", profile.email);
 
 				await updateDoc(usuarioRef, {bio: biografia});
