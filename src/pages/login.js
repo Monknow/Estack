@@ -15,10 +15,10 @@ const LoginEstilizado = styled.div`
 `;
 
 const LoginPage = () => {
-	const db = getFirestore();
-
 	const loginUsuario = async (email, contraseña, nombre, username, levantarMensajeDeError, levantarCargando) => {
 		try {
+			const db = getFirestore();
+
 			const auth = getAuth();
 
 			levantarCargando(true);

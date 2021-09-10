@@ -3,8 +3,6 @@ import {ToastContainer, toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const notificar = (tipo, mensaje, promesa) => {
-	console.log(tipo);
-
 	switch (tipo) {
 		case undefined:
 			toast(mensaje, {

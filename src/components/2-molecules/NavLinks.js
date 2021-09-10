@@ -45,9 +45,10 @@ const NavLinks = () => {
 	const {isLoading, isLoggedIn, profile} = useContext(ContextoAuth);
 
 	const [linkDelStackDelUsuario, setLinkDelStackDelUsuario] = useState("/");
-	const db = getFirestore();
 
 	useEffect(() => {
+		const db = getFirestore();
+
 		const cargarUsuarioDeFirestore = async () => {
 			if (!isLoading && isLoggedIn) {
 				const usuarioRef = doc(db, "users", profile.email);
@@ -63,7 +64,7 @@ const NavLinks = () => {
 		};
 
 		cargarUsuarioDeFirestore();
-	}, [isLoading, isLoggedIn, profile, db]);
+	}, [isLoading, isLoggedIn, profile]);
 
 	const manejarClickLogOut = async () => {
 		const auth = getAuth();

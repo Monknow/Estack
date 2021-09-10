@@ -60,10 +60,11 @@ const Biografia = ({esqueleto, texto}) => {
 	const [biografia, setBiografia] = useState(texto);
 	const [editarbiografia, setEditarBiografia] = useState(false);
 
-	const db = getFirestore();
-
 	useEffect(() => {
+		const db = getFirestore();
+
 		let mounted = true;
+
 		const cargarDatosDeFirestore = async () => {
 			if (!texto && !isLoading && mounted) {
 				const usuarioRef = doc(db, "users", datos.email);

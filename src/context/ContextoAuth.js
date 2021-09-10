@@ -18,10 +18,11 @@ const AuthProvider = (props) => {
 	const [cargando, setCargando] = useState(true);
 	const [perfilUsuario, setPerfilUsuario] = useState(null);
 
-	initializeApp(firebaseConfig);
-	const auth = getAuth();
-
 	useEffect(() => {
+		initializeApp(firebaseConfig);
+
+		const auth = getAuth();
+
 		const desuscribir = onAuthStateChanged(auth, (user) => {
 			if (user) {
 				setPerfilUsuario(user);

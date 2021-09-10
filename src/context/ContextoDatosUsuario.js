@@ -14,9 +14,9 @@ const DatosUsuarioProvider = ({location, children}) => {
 	const [cargando, setCargando] = useState(true);
 	const [sePuedeEditar, setSePuedeEditar] = useState(false);
 
-	const db = getFirestore();
-
 	useEffect(() => {
+		const db = getFirestore();
+
 		const cargarUsuario = async () => {
 			if (!isLoading) {
 				const usuariosRef = collection(db, "users");
@@ -41,7 +41,7 @@ const DatosUsuarioProvider = ({location, children}) => {
 
 		cargarUsuario();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [db, isLoading, location]);
+	}, [isLoading, location]);
 
 	useEffect(() => {
 		if (!isLoading && isLoggedIn && datosUsuario && profile.email === datosUsuario.email) {

@@ -52,8 +52,6 @@ const RedSocial = ({keyRedSocial, valorRedSocial, eliminarOpcion, empezarAGuarda
 
 	const slugifiedRedSocial = slugify(keyRedSocial, slugifyConfig);
 
-	const db = getFirestore();
-
 	const {styles, attributes} = usePopper(referenceElement, popperElement, {
 		placement: "bottom",
 		modifiers: [
@@ -68,6 +66,8 @@ const RedSocial = ({keyRedSocial, valorRedSocial, eliminarOpcion, empezarAGuarda
 	});
 
 	useEffect(() => {
+		const db = getFirestore();
+
 		let mounted = true;
 		const cargarDatosDeFirestore = async () => {
 			if (mounted && datos) {

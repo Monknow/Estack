@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-import {useState, useContext} from "react";
+import {useState, useContext, useEffect} from "react";
 import ContextoDatosUsuario from "../../context/ContextoDatosUsuario";
 import {getFirestore, doc, updateDoc} from "firebase/firestore";
 import useOpciones from "../../hooks/useOpciones";

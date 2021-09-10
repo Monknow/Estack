@@ -18,8 +18,6 @@ const SigninEstilizado = styled.div`
 `;
 
 const SigninPage = () => {
-	const auth = getAuth();
-
 	const crearUsuarioEnFireStore = async (
 		email,
 		contraseña,
@@ -28,10 +26,12 @@ const SigninPage = () => {
 		levantarMensajeDeError,
 		levantarCargando
 	) => {
-		const db = getFirestore();
 		const uid = uniqueSlug();
 
 		try {
+			const db = getFirestore();
+			const auth = getAuth();
+
 			levantarCargando(true);
 
 			await createUserWithEmailAndPassword(auth, email, contraseña).then(async ({user}) => {
