@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-import {useState, useContext} from "react";
+import {useState, useContext, useEffect} from "react";
 import ContextoURL from "../../context/ContextoURL";
 import Boton from "../1-atoms/Boton";
 import InputLogin from "../2-molecules/InputLogin";
@@ -77,17 +77,26 @@ const Campos = styled.div`
 
 const AuthForm = ({titulo, manejarSubmit, tipo}) => {
 	const urlDelContexto = useContext(ContextoURL);
-	const parametrosURl = new URL(urlDelContexto.href).searchParams;
-	const emailDeURL = parametrosURl.get("email") ? parametrosURl.get("email") : "";
-	const mensajeDeURL = parametrosURl.get("message") ? parametrosURl.get("message") : "";
 
 	const [username, setUsername] = useState("");
 	const [nombre, setNombre] = useState("");
-	const [email, setEmail] = useState(emailDeURL);
+	const [email, setEmail] = useState("");
 	const [contraseña, setContraseña] = useState("");
 
-	const [mensajeDeError, setMensajeDeError] = useState(mensajeDeURL);
+	const [mensajeDeError, setMensajeDeError] = useState("");
 	const [cargando, setCargando] = useState(false);
+
+	useEffect(() => {
+		const url = new URL(urlDelContexto.href);
+
+		if (url) {
+			const parametrosURl = url.searchParams;
+			const emailDeURL = parametrosURl.get("email") ? parametrosURl.get("email") : "";
+			setEmail(emailDeURL);
+			const mensajeDeURL = parametrosURl.get("message") ? parametrosURl.get("message") : "";
+			setMensajeDeError(mensajeDeURL);
+		}
+	}, [urlDelContexto]);
 
 	const datosInputs = {
 		signin: [
