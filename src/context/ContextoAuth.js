@@ -17,10 +17,9 @@ export default ContextoAuth;
 const AuthProvider = (props) => {
 	const [cargando, setCargando] = useState(true);
 	const [perfilUsuario, setPerfilUsuario] = useState(null);
+	initializeApp(firebaseConfig);
 
 	useEffect(() => {
-		initializeApp(firebaseConfig);
-
 		const auth = getAuth();
 
 		const desuscribir = onAuthStateChanged(auth, (user) => {
