@@ -19,38 +19,51 @@ const DatosUsuarioProvider = ({location, children}) => {
 		const db = getFirestore();
 		setCargando(true);
 
-		const cargarUsuario = async () => {
-			if (!isLoading) {
-				const usuariosRef = collection(db, "users");
+		let mounted = true;
 
-				const pathnameSlug = location.pathname.replace(/\/stack\//, "");
+		if (mounted) {
+			const cargarUsuario = async () => {
+				if (!isLoading) {
+					const usuariosRef = collection(db, "users");
 
-				const usuarioQuery = query(usuariosRef, where("slug", "==", pathnameSlug));
+					const pathnameSlug = location.pathname.replace(/\/stack\//, "");
 
-				const usuariosQuerySnap = await getDocs(usuarioQuery);
-				if (usuariosQuerySnap) {
-					if (usuariosQuerySnap.empty) {
-						setError("User not found");
-						setCargando(false);
-					} else {
-						usuariosQuerySnap.forEach((usuario) => {
-							setDatosUsuario(usuario.data());
+					const usuarioQuery = query(usuariosRef, where("slug", "==", pathnameSlug));
+
+					const usuariosQuerySnap = await getDocs(usuarioQuery);
+					if (usuariosQuerySnap) {
+						if (usuariosQuerySnap.empty) {
+							setError("User not found");
 							setCargando(false);
-						});
+						} else {
+							usuariosQuerySnap.forEach((usuario) => {
+								setDatosUsuario(usuario.data());
+								setCargando(false);
+							});
+						}
 					}
 				}
-			}
-		};
+			};
 
-		cargarUsuario();
+			cargarUsuario();
+		}
+
+		return () => {
+			mounted = false;
+		};
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isLoading, location]);
 
 	useEffect(() => {
-		if (!isLoading && isLoggedIn && datosUsuario && profile.email === datosUsuario.email) {
+		let mounted = true;
+
+		if (mounted && !isLoading && isLoggedIn && datosUsuario && profile.email === datosUsuario.email) {
 			setSePuedeEditar(true);
 		}
+		return () => {
+			mounted = false;
+		};
 	}, [location, isLoading, isLoggedIn, profile, datosUsuario]);
 
 	return (

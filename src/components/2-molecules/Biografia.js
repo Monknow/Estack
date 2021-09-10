@@ -105,7 +105,7 @@ const Biografia = ({texto}) => {
 
 	return (
 		<BiografiaEstilizada>
-			{editarbiografia ? (
+			{sePuedeEditar && editarbiografia ? (
 				<EditarBiografiaEstilizada
 					onSubmit={(evento) => {
 						evento.preventDefault();

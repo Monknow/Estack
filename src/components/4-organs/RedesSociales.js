@@ -64,11 +64,13 @@ const RedesSociales = () => {
 		usuarioRef,
 		"socialMedia"
 	);
+	console.log(opcionesAñadidas);
 
 	return (
 		<RedesSocialesEnvoltorio>
 			<RedesSocialesEstilizadas>
-				<Subtitulo esqueleto={!empezarAGuardar}>Social Media</Subtitulo>
+				{opcionesAñadidas.size !== 0 ||
+					(sePuedeEditar && <Subtitulo esqueleto={!empezarAGuardar}>Social Media</Subtitulo>)}
 
 				<BurbujasRedes>
 					{[...opcionesAñadidas].map((keyRedSocial) => {
