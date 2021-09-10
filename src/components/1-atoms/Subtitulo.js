@@ -2,6 +2,10 @@ import * as React from "react";
 import styled from "styled-components";
 import EsqueletoRectangular from "./EsqueletoRectangular";
 
+const TituloEnvoltorio = styled.span`
+	display: block;
+`;
+
 const SubtituloEstilizado = styled.h2`
 	font-family: "ibm_plex_sans_thaisemibold";
 	font-size: 1.8rem;
@@ -19,13 +23,13 @@ const Subtitulo = (props) => {
 	const {esqueleto} = props;
 
 	return (
-		<span>
+		<TituloEnvoltorio>
 			{esqueleto ? (
 				<EsqueletoRectangular width="clamp(100px, 14vw, 200px)" height="clamp(20px, 8vw, 40px)" />
 			) : (
 				<SubtituloEstilizado {...props}></SubtituloEstilizado>
 			)}
-		</span>
+		</TituloEnvoltorio>
 	);
 };
 

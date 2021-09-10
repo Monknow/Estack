@@ -1,16 +1,11 @@
 import * as React from "react";
-import {useState, useContext, useEffect} from "react";
-import ContextoAuth from "../../context/ContextoAuth";
+import {useContext} from "react";
+import ContextoDatosUsuario from "../../context/ContextoDatosUsuario";
 import ContextoURL from "../../context/ContextoURL";
-import ContextoEdicion from "../../context/ContextoEdicion";
-import {getFirestore, doc, getDoc} from "@firebase/firestore";
 import styled from "styled-components";
 import Titulo from "../1-atoms/Titulo";
-import Boton from "../1-atoms/Boton";
 import CopiarTexto from "../2-molecules/CopiarTexto";
 import Biografia from "../2-molecules/Biografia";
-
-import {Link} from "gatsby";
 
 const HeaderStackEnvoltura = styled.div``;
 
@@ -25,21 +20,6 @@ const HeaderStackEstilizado = styled.header`
 	}
 `;
 
-const Botones = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-flow: row wrap;
-
-	& > * {
-		margin: 5px 20px;
-	}
-
-	& button {
-		width: clamp(170px, 18vw, 220px);
-	}
-`;
-
 const InfoUsuario = styled.div`
 	display: flex;
 	align-items: center;
@@ -48,44 +28,17 @@ const InfoUsuario = styled.div`
 `;
 
 const HeaderStack = () => {
-	const {isLoading, profile} = useContext(ContextoAuth);
-	const sePuedeEditar = useContext(ContextoEdicion);
-
-	const [datosUsuario, setDatosUsuario] = useState(null);
-
-	const db = getFirestore();
-	const usuarioRef = doc(db, "users", profile.email);
-
-	useEffect(() => {
-		const cargarDatosDelUsuario = async () => {
-			if (!isLoading && profile) {
-				const usuarioSnap = await getDoc(usuarioRef);
-
-				if (usuarioSnap.exists) {
-					setDatosUsuario(usuarioSnap.data());
-				} else console.error("This document doesn't exists!");
-			}
-		};
-
-		cargarDatosDelUsuario();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [profile, isLoading]);
+	const {datos, cargando} = useContext(ContextoDatosUsuario);
+	const {origin} = useContext(ContextoURL);
+	console.log(`${origin}/stack/${datos.slug}`);
 
 	return (
 		<HeaderStackEnvoltura>
 			<HeaderStackEstilizado>
-				<Botones>
-					<Link to={`/users/${datosUsuario?.slug}`}>
-						<Boton esqueleto={!datosUsuario}>See your link</Boton>
-					</Link>
-					<CopiarTexto
-						esqueleto={!datosUsuario}
-						textoACopiar={`estacksharer.com/users/${datosUsuario?.slug}`}
-					/>
-				</Botones>
+				<CopiarTexto esqueleto={cargando} textoACopiar={`${origin}/stack/${datos.slug}`} />
 				<InfoUsuario>
-					<Titulo esqueleto={!datosUsuario}>{datosUsuario?.username}'s stack</Titulo>
-					<Biografia esqueleto={!datosUsuario} edicion={sePuedeEditar}></Biografia>
+					<Titulo esqueleto={cargando}>{datos.username}'s stack</Titulo>
+					<Biografia esqueleto={cargando}></Biografia>
 				</InfoUsuario>
 			</HeaderStackEstilizado>
 		</HeaderStackEnvoltura>

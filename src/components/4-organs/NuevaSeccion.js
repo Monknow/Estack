@@ -1,15 +1,18 @@
 import * as React from "react";
 import styled from "styled-components";
-import SeccionStackEstilizado from "../1-atoms/SeccionStackEstilizado";
+import EstilosBasicosSeccionStack from "../1-atoms/EstilosBasicosSeccionStack";
 import OpcionesDisponibles from "../3-cells/OpcionesDisponibles";
 import Subtitulo from "../1-atoms/Subtitulo";
 
-const NuevaSeccionEstilizada = styled(SeccionStackEstilizado)`
+const NuevaSeccionEstilizada = styled(EstilosBasicosSeccionStack)`
+	display: flex;
 	align-items: center;
 	justify-content: center;
-	cursor: pointer;
 
-	margin: 0px 30px;
+	width: 100%;
+	height: clamp(150px, 30vw, 250px);
+
+	cursor: pointer;
 `;
 
 const NuevaSeccion = ({opciones, añadirOpcion, eliminarSeccion}) => {

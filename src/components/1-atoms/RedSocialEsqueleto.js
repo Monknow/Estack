@@ -14,6 +14,8 @@ const cargando = keyframes`
 const largoDelEsqueleto = "clamp(42px, 10vw, 58px)";
 
 const RedSocialEsqueletoEstilizado = styled.div`
+	margin: 10px;
+
 	width: ${largoDelEsqueleto};
 	height: ${largoDelEsqueleto};
 

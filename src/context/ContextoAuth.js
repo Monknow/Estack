@@ -1,9 +1,7 @@
 import * as React from "react";
-import {useState, useEffect} from "react";
+import {useState, useEffect, createContext} from "react";
 import {initializeApp} from "firebase/app";
 import firebaseConfig from "../../firebaseConfig";
-import {createContext} from "react";
-
 import {getAuth, onAuthStateChanged} from "firebase/auth";
 
 const contextoInicial = {

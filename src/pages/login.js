@@ -2,6 +2,7 @@ import * as React from "react";
 import {Helmet} from "react-helmet";
 import styled from "styled-components";
 import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
+import {getFirestore, doc, getDoc} from "@firebase/firestore";
 import {navigate} from "gatsby";
 import AuthForm from "../components/3-cells/AuthForm";
 
@@ -14,14 +15,25 @@ const LoginEstilizado = styled.div`
 `;
 
 const LoginPage = () => {
+	const db = getFirestore();
+
 	const loginUsuario = async (email, contraseña, nombre, username, levantarMensajeDeError, levantarCargando) => {
 		try {
 			const auth = getAuth();
 
 			levantarCargando(true);
-			await signInWithEmailAndPassword(auth, email, contraseña).then(({user}) => {
+			await signInWithEmailAndPassword(auth, email, contraseña).then(async ({user}) => {
 				if (user) {
-					navigate("/stack");
+					const usuarioRef = doc(db, "users", email);
+					const usuarioSnap = await getDoc(usuarioRef);
+
+					if (usuarioSnap.exists()) {
+						const slugUsuario = usuarioSnap.data().slug;
+						navigate(`/stack/${slugUsuario}`);
+					} else {
+						console.error("The document doesn't exist");
+						navigate("/");
+					}
 				}
 			});
 		} catch (error) {

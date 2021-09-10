@@ -10,22 +10,25 @@ const OpcionesAñadidasEstilizadas = styled.div`
 	flex-flow: row wrap;
 
 	width: 100%;
+
+	@media (max-width: 400px) {
+		justify-content: center;
+	}
 `;
 
 const OpcionAñadida = styled.div`
-	width: max-content;
+	flex-basis: clamp(100px, 40%, 300px);
+	flex-grow: 2;
 
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
 
+	width: max-content;
+
 	margin: 5px;
 
 	font-size: 18px;
-
-	@media (max-width: 400px) {
-		width: 100%;
-	}
 `;
 
 const BotonEliminar = styled(Boton)`

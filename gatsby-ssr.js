@@ -1,7 +1,7 @@
 import * as React from "react";
 import {URlProvider} from "./src/context/ContextoURL";
 import {AuthProvider} from "./src/context/ContextoAuth";
-import {EdicionProvider} from "./src/context/ContextoEdicion";
+import {DatosUsuarioProvider} from "./src/context/ContextoDatosUsuario";
 import EstilosGlobales from "./src/context/EstilosGlobales";
 import NavBar from "./src/components/3-cells/NavBar";
 import Footer from "./src/components/2-molecules/Footer";
@@ -11,11 +11,11 @@ export const wrapPageElement = ({element, props}) => {
 		<URlProvider {...props}>
 			<EstilosGlobales></EstilosGlobales>
 			<AuthProvider>
-				<EdicionProvider {...props}>
+				<DatosUsuarioProvider {...props}>
 					<NavBar></NavBar>
 					{element}
 					<Footer></Footer>
-				</EdicionProvider>
+				</DatosUsuarioProvider>
 			</AuthProvider>
 		</URlProvider>
 	);

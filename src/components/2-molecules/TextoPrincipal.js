@@ -16,6 +16,10 @@ const TextoPrincipalEstilizado = styled.header`
 		margin: clamp(5px, 2vw, 10px) 0px;
 	}
 
+	& > p {
+		font-size: 1.5rem;
+	}
+
 	@media (max-width: 600px) {
 		align-items: center;
 		text-align: center;

@@ -1,6 +1,7 @@
 import * as React from "react";
 import {navigate, Link} from "gatsby";
-import {useContext} from "react";
+import {useContext, useEffect, useState} from "react";
+import {getFirestore, doc, getDoc} from "@firebase/firestore";
 import {getAuth, signOut} from "firebase/auth";
 import ContextoAuth from "../../context/ContextoAuth";
 import styled from "styled-components";
@@ -43,6 +44,27 @@ const LinksUsuarioAutorizado = styled.div`
 const NavLinks = () => {
 	const {isLoading, isLoggedIn, profile} = useContext(ContextoAuth);
 
+	const [linkDelStackDelUsuario, setLinkDelStackDelUsuario] = useState("/");
+	const db = getFirestore();
+
+	useEffect(() => {
+		const cargarUsuarioDeFirestore = async () => {
+			if (!isLoading && isLoggedIn) {
+				const usuarioRef = doc(db, "users", profile.email);
+				const usuarioSnap = await getDoc(usuarioRef);
+
+				if (usuarioSnap.exists()) {
+					const slugUsuario = usuarioSnap.data().slug;
+					setLinkDelStackDelUsuario(`/stack/${slugUsuario}`);
+				} else {
+					console.log("Error while loading document:", usuarioRef);
+				}
+			}
+		};
+
+		cargarUsuarioDeFirestore();
+	}, [isLoading, isLoggedIn, profile, db]);
+
 	const manejarClickLogOut = async () => {
 		const auth = getAuth();
 		await signOut(auth)
@@ -61,11 +83,11 @@ const NavLinks = () => {
 					<Logo />
 				</Link>
 				{!isLoading && isLoggedIn ? (
-					<Link to="/stack">
+					<Link to={linkDelStackDelUsuario}>
 						<Boton>Stack</Boton>
 					</Link>
 				) : (
-					<Link to="/login?message=To see your stack you must be logged">
+					<Link to="/login?message=To edit your stack you must be logged">
 						<Boton>Stack</Boton>
 					</Link>
 				)}

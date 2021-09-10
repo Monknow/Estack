@@ -1,11 +1,11 @@
 import {useState, useEffect, useContext} from "react";
-import ContextoAuth from "../context/ContextoAuth";
+import ContextoDatosUsuario from "../context/ContextoDatosUsuario";
 import {getDoc, updateDoc, setDoc} from "firebase/firestore";
 import slugify from "slugify";
 import slugifyConfig from "../data/slugifyConfig";
 
 const useOpciones = (opcionParaAñadir, opcionParaEliminar, opciones, docRef, pathArray, titulo) => {
-	const {isLoading, profile} = useContext(ContextoAuth);
+	const {datos, cargando} = useContext(ContextoDatosUsuario);
 
 	const [opcionesAñadidas, setOpcionesAñadidas] = useState(new Set());
 	const [opcionesDisponibles, setOpcionesDisponibles] = useState(new Set([...opciones]));
@@ -62,7 +62,7 @@ const useOpciones = (opcionParaAñadir, opcionParaEliminar, opciones, docRef, pa
 
 	useEffect(() => {
 		const cargarDatosDesdeFirestore = async () => {
-			if (!isLoading && profile) {
+			if (!cargando && datos) {
 				const docSnap = await getDoc(docRef);
 
 				if (docSnap.exists()) {
@@ -77,11 +77,11 @@ const useOpciones = (opcionParaAñadir, opcionParaEliminar, opciones, docRef, pa
 		cargarDatosDesdeFirestore();
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isLoading, profile]);
+	}, [cargando, datos]);
 
 	useEffect(() => {
 		const actualizarOpcionesEnFirestore = async () => {
-			if (!isLoading && profile && empezarAGuardar) {
+			if (!cargando && datos && empezarAGuardar) {
 				const docSnap = await getDoc(docRef);
 
 				if (docSnap.exists()) {

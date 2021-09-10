@@ -1,12 +1,6 @@
 import styled from "styled-components";
 
-const SeccionStackEstilizado = styled.div`
-	display: flex;
-	align-items: flex-start;
-	justify-content: flex-start;
-	flex-flow: column nowrap;
-
-	min-height: 250px;
+const EstilosBasicosSeccionStack = styled.div`
 	height: 100%;
 
 	box-sizing: border-box;
@@ -26,4 +20,4 @@ const SeccionStackEstilizado = styled.div`
 	}
 `;
 
-export default SeccionStackEstilizado;
+export default EstilosBasicosSeccionStack;

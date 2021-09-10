@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled, {keyframes} from "styled-components";
-import InputStackEstilizado from "./SeccionStackEstilizado";
+import InputStackEstilizado from "./EstilosBasicosSeccionStack";
 
 const cargando = keyframes`
     to {
@@ -19,7 +19,10 @@ const cargando = keyframes`
 `;
 
 const SeccionStackSkeletonEstilizado = styled(InputStackEstilizado)`
-	width: 100%;
+	flex-shrink: 2;
+	flex-grow: 2;
+	flex-basis: 400px;
+	height: 300px;
 
 	background-repeat: no-repeat;
 	background-image: 

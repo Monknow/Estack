@@ -1,5 +1,5 @@
 import * as React from "react";
-import styled, {keyframes} from "styled-components";
+import styled from "styled-components";
 import EsqueletoRectangular from "./EsqueletoRectangular";
 
 const BotonEstilizado = styled.button`

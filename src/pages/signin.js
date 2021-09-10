@@ -1,5 +1,4 @@
 import * as React from "react";
-import {useEffect} from "react";
 import {Helmet} from "react-helmet";
 import styled from "styled-components";
 import validator from "validator";
@@ -53,7 +52,7 @@ const SigninPage = () => {
 				stackSections: [],
 				socialMedia: [],
 			}).then(() => {
-				navigate("/stack");
+				navigate(`/stack/${username}-${uid}`);
 			});
 		} catch (error) {
 			levantarCargando(false);
@@ -91,12 +90,6 @@ const SigninPage = () => {
 				levantarMensajeDeError("Unkown error. Try later");
 		}
 	};
-
-	useEffect(() => {
-		if (window) {
-			window.scroll(0, 100);
-		}
-	});
 
 	return (
 		<SigninEstilizado>

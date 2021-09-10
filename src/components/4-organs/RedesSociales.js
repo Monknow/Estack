@@ -2,8 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import {getFirestore, doc} from "firebase/firestore";
 import {useContext, useState} from "react";
-import ContextoEdicion from "../../context/ContextoEdicion";
-import ContextoAuth from "../../context/ContextoAuth";
+import ContextoDatosUsuario from "../../context/ContextoDatosUsuario";
 import useOpciones from "../../hooks/useOpciones";
 import datosRedesSociales from "../../data/datosRedesSociales";
 import RedSocial from "../2-molecules/RedSocial";
@@ -40,21 +39,21 @@ const BurbujasRedes = styled.div`
 	display: flex;
 	align-items: flex-end;
 	justify-content: center;
+	flex-flow: row wrap;
 
 	& > * {
 		margin: 0px 10px;
 	}
 `;
 
-const RedesSociales = ({redesSociales}) => {
-	const {profile, isLoading} = useContext(ContextoAuth);
-	const sePuedeEditar = useContext(ContextoEdicion);
+const RedesSociales = () => {
+	const {datos, sePuedeEditar} = useContext(ContextoDatosUsuario);
 
 	const [opcionParaAñadir, setOpcionParaAñadir] = useState(null);
 	const [opcionParaEliminar, setOpcionParaEliminar] = useState(null);
 
 	const db = getFirestore();
-	const usuarioRef = !isLoading ? doc(db, "users", profile.email) : null;
+	const usuarioRef = doc(db, "users", datos.email);
 
 	const datosRedesSocialesKeys = Array.from(datosRedesSociales.keys());
 
@@ -66,15 +65,13 @@ const RedesSociales = ({redesSociales}) => {
 		"socialMedia"
 	);
 
-	const redesSocialesArray = sePuedeEditar ? opcionesAñadidas : redesSociales;
-
 	return (
 		<RedesSocialesEnvoltorio>
 			<RedesSocialesEstilizadas>
 				<Subtitulo esqueleto={!empezarAGuardar}>Social Media</Subtitulo>
 
 				<BurbujasRedes>
-					{[...redesSocialesArray].map((keyRedSocial) => {
+					{[...opcionesAñadidas].map((keyRedSocial) => {
 						/* Se utiliza el operador spread para convertir "opcionesAñadidas" de set a array*/
 
 						const valorRedSocial = datosRedesSociales.get(keyRedSocial);

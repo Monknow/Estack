@@ -1,6 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import {useContext, useState, useEffect} from "react";
+import ContextoDatosUsuario from "../../context/ContextoDatosUsuario";
 import ContextoAuth from "../../context/ContextoAuth";
 import {getFirestore, doc, getDoc, updateDoc} from "@firebase/firestore";
 import IconoEditarSVG from "../../assets/svg/iconmonstr-pencil-9.inline.svg";
@@ -52,11 +53,12 @@ const SinEditarBiografiaEstilizada = styled.p`
 	}
 `;
 
-const Biografia = ({esqueleto, edicion, texto}) => {
+const Biografia = ({esqueleto, texto}) => {
 	const {profile, isLoading} = useContext(ContextoAuth);
+	const {datos, sePuedeEditar, cargando} = useContext(ContextoDatosUsuario);
 
 	const [biografia, setBiografia] = useState(texto);
-	const [editarbiografia, setEditarBiografia] = useState(edicion);
+	const [editarbiografia, setEditarBiografia] = useState(false);
 
 	const db = getFirestore();
 
@@ -64,7 +66,7 @@ const Biografia = ({esqueleto, edicion, texto}) => {
 		let mounted = true;
 		const cargarDatosDeFirestore = async () => {
 			if (!texto && !isLoading && mounted) {
-				const usuarioRef = doc(db, "users", profile.email);
+				const usuarioRef = doc(db, "users", datos.email);
 
 				const usuarioSnap = await getDoc(usuarioRef);
 
@@ -88,7 +90,7 @@ const Biografia = ({esqueleto, edicion, texto}) => {
 
 	const enviarBiografiaAFirestore = async () => {
 		try {
-			if (edicion && !isLoading && profile) {
+			if (sePuedeEditar && !isLoading && profile) {
 				const usuarioRef = doc(db, "users", profile.email);
 
 				await updateDoc(usuarioRef, {bio: biografia});
@@ -119,11 +121,11 @@ const Biografia = ({esqueleto, edicion, texto}) => {
 				</EditarBiografiaEstilizada>
 			) : (
 				<SinEditarBiografiaEstilizada>
-					<TextoBiografia esqueleto={esqueleto}>{biografia}</TextoBiografia>
-					{edicion && (
+					<TextoBiografia esqueleto={cargando}>{biografia}</TextoBiografia>
+					{sePuedeEditar && (
 						<Boton
 							secundario
-							esqueleto={esqueleto}
+							esqueleto={cargando}
 							onClick={() => {
 								setEditarBiografia(true);
 							}}>

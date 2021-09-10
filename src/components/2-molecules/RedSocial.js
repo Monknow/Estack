@@ -1,8 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import {useContext, useState, useEffect} from "react";
-import ContextoEdicion from "../../context/ContextoEdicion";
-import ContextoAuth from "../../context/ContextoAuth";
+import ContextoDatosUsuario from "../../context/ContextoDatosUsuario";
 import {getFirestore, doc, setDoc, getDoc, updateDoc} from "firebase/firestore";
 import {usePopper} from "react-popper";
 import slugify from "slugify";
@@ -42,10 +41,8 @@ const FormularioDeSufijoLink = styled.form`
 `;
 
 const RedSocial = ({keyRedSocial, valorRedSocial, eliminarOpcion, empezarAGuardar}) => {
-	const {profile, loading} = useContext(ContextoAuth);
-	const sePuedeEditar = useContext(ContextoEdicion);
+	const {datos, sePuedeEditar} = useContext(ContextoDatosUsuario);
 
-	const [datosRedSocial, setDatosRedSocial] = useState(null);
 	const [sufijoLink, setSufijoLink] = useState("");
 	const [cargando, setCargando] = useState(true);
 	const [redSocialTieneLinkAdjunto, setRedSocialTieneLinkAdjunto] = useState(false);
@@ -73,14 +70,13 @@ const RedSocial = ({keyRedSocial, valorRedSocial, eliminarOpcion, empezarAGuarda
 	useEffect(() => {
 		let mounted = true;
 		const cargarDatosDeFirestore = async () => {
-			if (mounted && !loading && profile) {
-				const usuarioRef = doc(db, "users", profile.email);
+			if (mounted && datos) {
+				const usuarioRef = doc(db, "users", datos.email);
 				const socialRef = doc(usuarioRef, "social", slugifiedRedSocial);
 
 				const socialSnap = await getDoc(socialRef);
 
 				if (socialSnap.exists()) {
-					setDatosRedSocial(socialSnap.data());
 					setRedSocialTieneLinkAdjunto(!!socialSnap.data()?.sufijoLink);
 					setSufijoLink(socialSnap.data().sufijoLink);
 				} else {
@@ -99,8 +95,8 @@ const RedSocial = ({keyRedSocial, valorRedSocial, eliminarOpcion, empezarAGuarda
 
 	const enviarSufijoLinkAFirestore = async (sufijoLinkParaEnviar) => {
 		try {
-			if (sePuedeEditar && !loading && profile) {
-				const usuarioRef = doc(db, "users", profile.email);
+			if (sePuedeEditar && datos) {
+				const usuarioRef = doc(db, "users", datos.email);
 				const socialRef = doc(usuarioRef, "social", slugifiedRedSocial);
 
 				await updateDoc(socialRef, {sufijoLink: sufijoLinkParaEnviar});
@@ -134,7 +130,7 @@ const RedSocial = ({keyRedSocial, valorRedSocial, eliminarOpcion, empezarAGuarda
 			) : (
 				<RedSocialEsqueleto />
 			)}
-			{!cargando && !redSocialTieneLinkAdjunto && (
+			{!cargando && sePuedeEditar && !redSocialTieneLinkAdjunto && (
 				<FormularioDeSufijoLink
 					onSubmit={(evento) => {
 						evento.preventDefault();

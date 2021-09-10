@@ -8,7 +8,7 @@ const EstilosGlobales = createGlobalStyle`
   }
 
   html{
-    font-size: clamp(10px, 3vw, 16px);
+    font-size: clamp(10px, 2vw, 14px);
   }
 
   body{

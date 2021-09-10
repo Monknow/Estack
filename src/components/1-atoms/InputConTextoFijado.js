@@ -12,6 +12,7 @@ const InputTextoEnvoltura = styled.div`
 	padding-left: 5px;
 
 	height: clamp(30px, 8vw, 40px);
+	width: 100%;
 
 	font-family: "ibm_plex_sans_thaisemibold";
 	font-size: 1rem;
@@ -22,10 +23,10 @@ const InputTextoEnvoltura = styled.div`
 
 const InputTextoSimple = styled.input`
 	flex-shrink: 2;
-	flex-basis: auto;
 
 	border: none;
-	padding-left: 0px;
+
+	width: 100%;
 
 	font-family: "ibm_plex_sans_thaisemibold";
 	color: #091e42;
@@ -36,6 +37,10 @@ const InputTextoSimple = styled.input`
 		outline: 0;
 		box-shadow: none;
 	}
+`;
+
+const TextoFijado = styled.p`
+	flex-shrink: 2;
 `;
 
 const InputConTextoFijado = ({textoFijado, elevarValorInput, value}) => {
@@ -51,12 +56,12 @@ const InputConTextoFijado = ({textoFijado, elevarValorInput, value}) => {
 
 	return (
 		<InputTextoEnvoltura inputEnFocus={inputEnFocus}>
-			<p
+			<TextoFijado
 				onClick={() => {
 					inputRef.current.focus();
 				}}>
 				{textoFijado}
-			</p>
+			</TextoFijado>
 			<InputTextoSimple
 				ref={inputRef}
 				onFocus={() => {
