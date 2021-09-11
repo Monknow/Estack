@@ -1,6 +1,7 @@
 import * as React from "react";
 import {useState, useEffect, createContext} from "react";
 import {initializeApp} from "firebase/app";
+import {initializeAppCheck, ReCaptchaV3Provider} from "firebase/app-check";
 import firebaseConfig from "../../firebaseConfig";
 import {getAuth, onAuthStateChanged} from "firebase/auth";
 
@@ -17,7 +18,19 @@ export default ContextoAuth;
 const AuthProvider = (props) => {
 	const [cargando, setCargando] = useState(true);
 	const [perfilUsuario, setPerfilUsuario] = useState(null);
-	initializeApp(firebaseConfig);
+
+	const app = initializeApp(firebaseConfig);
+
+	useEffect(() => {
+		initializeAppCheck(app, {
+			provider: new ReCaptchaV3Provider("6LcN6lwcAAAAAFbdxx6q4yoJYhO9NEKDMy8ZwLWd"),
+
+			// Optional argument. If true, the SDK automatically refreshes App Check
+			// tokens as needed.
+			isTokenAutoRefreshEnabled: true,
+		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	useEffect(() => {
 		const auth = getAuth();

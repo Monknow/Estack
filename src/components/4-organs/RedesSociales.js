@@ -64,7 +64,6 @@ const RedesSociales = () => {
 		usuarioRef,
 		"socialMedia"
 	);
-	console.log(opcionesAñadidas);
 
 	return (
 		<RedesSocialesEnvoltorio>

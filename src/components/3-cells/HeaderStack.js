@@ -30,7 +30,6 @@ const InfoUsuario = styled.div`
 const HeaderStack = () => {
 	const {datos, cargando} = useContext(ContextoDatosUsuario);
 	const {origin} = useContext(ContextoURL);
-	console.log(`${origin}/stack/${datos.slug}`);
 
 	return (
 		<HeaderStackEnvoltura>

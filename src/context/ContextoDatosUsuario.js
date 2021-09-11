@@ -3,7 +3,7 @@ import {useEffect, useState, useContext, createContext} from "react";
 import ContextoAuth from "./ContextoAuth";
 import {getFirestore, collection, query, where, getDocs} from "firebase/firestore";
 
-const ContextoPerfilUsuario = createContext({cargando: true, datos: null, sePuedeEditar: false, error: null});
+const ContextoPerfilUsuario = createContext({cargando: true, datos: null, sePuedeEditar: false});
 
 export default ContextoPerfilUsuario;
 
@@ -13,7 +13,6 @@ const DatosUsuarioProvider = ({location, children}) => {
 	const [datosUsuario, setDatosUsuario] = useState(null);
 	const [cargando, setCargando] = useState(true);
 	const [sePuedeEditar, setSePuedeEditar] = useState(false);
-	const [error, setError] = useState(null);
 
 	useEffect(() => {
 		const db = getFirestore();
@@ -33,7 +32,6 @@ const DatosUsuarioProvider = ({location, children}) => {
 					const usuariosQuerySnap = await getDocs(usuarioQuery);
 					if (usuariosQuerySnap) {
 						if (usuariosQuerySnap.empty) {
-							setError("User not found");
 							setCargando(false);
 						} else {
 							usuariosQuerySnap.forEach((usuario) => {
@@ -67,8 +65,7 @@ const DatosUsuarioProvider = ({location, children}) => {
 	}, [location, isLoading, isLoggedIn, profile, datosUsuario]);
 
 	return (
-		<ContextoPerfilUsuario.Provider
-			value={{cargando: cargando, datos: datosUsuario, sePuedeEditar: sePuedeEditar, error: error}}>
+		<ContextoPerfilUsuario.Provider value={{cargando: cargando, datos: datosUsuario, sePuedeEditar: sePuedeEditar}}>
 			{children}
 		</ContextoPerfilUsuario.Provider>
 	);
