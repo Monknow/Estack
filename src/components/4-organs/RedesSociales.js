@@ -68,34 +68,43 @@ const RedesSociales = () => {
 	return (
 		<RedesSocialesEnvoltorio>
 			<RedesSocialesEstilizadas>
-				{opcionesAñadidas.size !== 0 ||
-					(sePuedeEditar && <Subtitulo esqueleto={!empezarAGuardar}>Social Media</Subtitulo>)}
+				{sePuedeEditar && <Subtitulo esqueleto={!empezarAGuardar}>Social Media</Subtitulo>}
+				<div>
+					{empezarAGuardar ? (
+						<BurbujasRedes>
+							{[...opcionesAñadidas].map((keyRedSocial) => {
+								/* Se utiliza el operador spread para convertir "opcionesAñadidas" de set a array*/
 
-				<BurbujasRedes>
-					{[...opcionesAñadidas].map((keyRedSocial) => {
-						/* Se utiliza el operador spread para convertir "opcionesAñadidas" de set a array*/
+								const valorRedSocial = datosRedesSociales.get(keyRedSocial);
 
-						const valorRedSocial = datosRedesSociales.get(keyRedSocial);
-
-						return (
-							<RedSocial
-								key={keyRedSocial}
-								keyRedSocial={keyRedSocial}
-								valorRedSocial={valorRedSocial}
-								eliminarOpcion={setOpcionParaEliminar}
-								empezarAGuardar={empezarAGuardar}
-							/>
-						);
-					})}
-					{sePuedeEditar && (
-						<OpcionesDisponibles
-							opciones={opcionesDisponibles}
-							añadirOpcion={setOpcionParaAñadir}
-							eliminarSeccion={setOpcionParaEliminar}>
-							{empezarAGuardar ? <Icono IconoSVG={AñadirIconoSVG} secundario /> : <RedSocialEsqueleto />}
-						</OpcionesDisponibles>
+								return (
+									<RedSocial
+										key={keyRedSocial}
+										keyRedSocial={keyRedSocial}
+										valorRedSocial={valorRedSocial}
+										eliminarOpcion={setOpcionParaEliminar}
+										empezarAGuardar={empezarAGuardar}
+									/>
+								);
+							})}
+							{sePuedeEditar && (
+								<OpcionesDisponibles
+									opciones={opcionesDisponibles}
+									añadirOpcion={setOpcionParaAñadir}
+									eliminarSeccion={setOpcionParaEliminar}>
+									<Icono IconoSVG={AñadirIconoSVG} secundario />
+								</OpcionesDisponibles>
+							)}
+						</BurbujasRedes>
+					) : (
+						<BurbujasRedes>
+							{datos.socialMedia.map(() => {
+								return <RedSocialEsqueleto />;
+							})}
+							<RedSocialEsqueleto /> {/* Boton de añadir red social */}
+						</BurbujasRedes>
 					)}
-				</BurbujasRedes>
+				</div>
 			</RedesSocialesEstilizadas>
 		</RedesSocialesEnvoltorio>
 	);

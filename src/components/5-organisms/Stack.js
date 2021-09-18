@@ -11,18 +11,15 @@ import Titulo from "../1-atoms/Titulo";
 import useOpciones from "../../hooks/useOpciones";
 
 const StackEstilizadoEnvoltura = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-flow: column;
-
 	margin: 60px 0px 120px 0px;
+	width: 100vw;
 `;
 const StackEstilizado = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex-flow: column nowrap;
+	width: 100%;
 `;
 
 const SeccionesStack = styled.div`
@@ -34,6 +31,8 @@ const SeccionesStack = styled.div`
 
 	box-sizing: border-box;
 	padding: 30px;
+
+	width: 100%;
 `;
 
 const Stack = () => {

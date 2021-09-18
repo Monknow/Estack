@@ -16,6 +16,8 @@ const NavLinksEstilizados = styled.div`
 
 	width: 100vw;
 
+	font-size: 1.2rem;
+
 	& a {
 		margin: 0px 10px;
 	}

@@ -7,7 +7,7 @@ const ContextoPerfilUsuario = createContext({cargando: true, datos: null, sePued
 
 export default ContextoPerfilUsuario;
 
-const DatosUsuarioProvider = ({location, children}) => {
+const DatosUsuarioProvider = ({slug, children}) => {
 	const {profile, isLoading, isLoggedIn} = useContext(ContextoAuth);
 
 	const [datosUsuario, setDatosUsuario] = useState(null);
@@ -22,12 +22,10 @@ const DatosUsuarioProvider = ({location, children}) => {
 
 		if (mounted) {
 			const cargarUsuario = async () => {
-				if (!isLoading) {
+				if (!isLoading && slug) {
 					const usuariosRef = collection(db, "users");
 
-					const pathnameSlug = location.pathname.replace(/\/stack\//, "");
-
-					const usuarioQuery = query(usuariosRef, where("slug", "==", pathnameSlug));
+					const usuarioQuery = query(usuariosRef, where("slug", "==", slug));
 
 					const usuariosQuerySnap = await getDocs(usuarioQuery);
 					if (usuariosQuerySnap) {
@@ -51,7 +49,7 @@ const DatosUsuarioProvider = ({location, children}) => {
 		};
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isLoading, location]);
+	}, [isLoading]);
 
 	useEffect(() => {
 		let mounted = true;
@@ -62,7 +60,7 @@ const DatosUsuarioProvider = ({location, children}) => {
 		return () => {
 			mounted = false;
 		};
-	}, [location, isLoading, isLoggedIn, profile, datosUsuario]);
+	}, [isLoading, isLoggedIn, profile, datosUsuario]);
 
 	return (
 		<ContextoPerfilUsuario.Provider value={{cargando: cargando, datos: datosUsuario, sePuedeEditar: sePuedeEditar}}>

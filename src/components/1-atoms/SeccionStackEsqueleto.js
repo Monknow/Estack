@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled, {keyframes} from "styled-components";
-import InputStackEstilizado from "./EstilosBasicosSeccionStack";
+import EstilosBasicosSeccionStack from "./EstilosBasicosSeccionStack";
 
 const cargando = keyframes`
     to {
@@ -18,8 +18,7 @@ const cargando = keyframes`
     }
 `;
 
-const SeccionStackSkeletonEstilizado = styled(InputStackEstilizado)`
-	flex-shrink: 2;
+const SeccionStackSkeletonEstilizado = styled(EstilosBasicosSeccionStack)`
 	flex-grow: 2;
 	flex-basis: 400px;
 	height: 300px;
