@@ -98,8 +98,8 @@ const RedesSociales = () => {
 						</BurbujasRedes>
 					) : (
 						<BurbujasRedes>
-							{datos.socialMedia.map(() => {
-								return <RedSocialEsqueleto />;
+							{datos.socialMedia.map((socialMedia) => {
+								return <RedSocialEsqueleto key={socialMedia} />;
 							})}
 							<RedSocialEsqueleto /> {/* Boton de añadir red social */}
 						</BurbujasRedes>

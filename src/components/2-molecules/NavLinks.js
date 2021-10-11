@@ -72,7 +72,7 @@ const NavLinks = () => {
 		const auth = getAuth();
 		await signOut(auth)
 			.then(() => {
-				navigate("/");
+				navigate("/login");
 			})
 			.catch((error) => {
 				console.error(error);
@@ -82,15 +82,22 @@ const NavLinks = () => {
 	return (
 		<NavLinksEstilizados>
 			<div>
-				<Link to="/">
-					<Logo />
-				</Link>
+				{!isLoading && isLoggedIn ? (
+					<Link to="/">
+						<Logo />
+					</Link>
+				) : (
+					<Link to="/login?message=To explore stacks you must be logged">
+						<Logo />
+					</Link>
+				)}
+
 				{!isLoading && isLoggedIn ? (
 					<Link to={linkDelStackDelUsuario}>
 						<Boton>Stack</Boton>
 					</Link>
 				) : (
-					<Link to="/login?message=To edit your stack you must be logged">
+					<Link to="/login?message=To see your stack you must be logged">
 						<Boton>Stack</Boton>
 					</Link>
 				)}
@@ -99,7 +106,7 @@ const NavLinks = () => {
 				{!isLoading && isLoggedIn ? (
 					<LinksUsuarioAutorizado>
 						<p>{profile.displayName}</p>
-						<LinkNav to="/" onClick={manejarClickLogOut}>
+						<LinkNav to="/login" onClick={manejarClickLogOut}>
 							Sign Out
 						</LinkNav>
 					</LinksUsuarioAutorizado>

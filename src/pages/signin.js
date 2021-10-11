@@ -11,7 +11,7 @@ import AuthForm from "../components/3-cells/AuthForm";
 
 const SigninEstilizado = styled.div`
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	justify-content: center;
 
 	min-height: 100vh;
@@ -43,7 +43,7 @@ const SigninPage = () => {
 			const usuarioRef = doc(db, "users", email);
 
 			await setDoc(usuarioRef, {
-				username: username,
+				username: username.toLowerCase(),
 				name: nombre,
 				email: email,
 				uid: uid,
@@ -65,6 +65,7 @@ const SigninPage = () => {
 		const credencialesSonValidas =
 			validator.isEmail(email) &&
 			validator.isStrongPassword(contraseña) &&
+			validator.isLowercase(username) &&
 			username.length >= 4 &&
 			nombre.length > 0;
 
@@ -79,6 +80,9 @@ const SigninPage = () => {
 				levantarMensajeDeError(
 					"Password must be 8 characters or more, with at least 1 lowercase, 1 uppercase, 1 number and 1 symbol"
 				);
+				break;
+			case validator.isLowercase(username) === false:
+				levantarMensajeDeError("Username must be in lower cases");
 				break;
 			case username.length < 4:
 				levantarMensajeDeError("Username must be 4 characters or more");

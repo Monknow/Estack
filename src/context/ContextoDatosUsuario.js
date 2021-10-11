@@ -49,7 +49,7 @@ const DatosUsuarioProvider = ({slug, children}) => {
 		};
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isLoading]);
+	}, [isLoading, isLoggedIn, profile]);
 
 	useEffect(() => {
 		let mounted = true;

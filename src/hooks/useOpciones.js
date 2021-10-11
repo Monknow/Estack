@@ -83,7 +83,6 @@ const useOpciones = (opcionParaAñadir, opcionParaEliminar, opciones, docRef, pa
 		const actualizarOpcionesEnFirestore = async () => {
 			if (!cargando && datos && empezarAGuardar) {
 				const docSnap = await getDoc(docRef);
-
 				if (docSnap.exists()) {
 					await updateDoc(docRef, {
 						[pathArray]: [...opcionesAñadidas],
@@ -92,6 +91,7 @@ const useOpciones = (opcionParaAñadir, opcionParaEliminar, opciones, docRef, pa
 					await setDoc(docRef, {
 						title: titulo,
 						uid: slugify(titulo, slugifyConfig),
+						userEmail: datos.email,
 						options: [...opcionesAñadidas],
 					});
 				}
@@ -99,7 +99,7 @@ const useOpciones = (opcionParaAñadir, opcionParaEliminar, opciones, docRef, pa
 		};
 		actualizarOpcionesEnFirestore();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [opcionesAñadidas, opcionesDisponibles, empezarAGuardar]);
+	}, [opcionesAñadidas, empezarAGuardar]);
 
 	return {opcionesAñadidas, opcionesDisponibles, empezarAGuardar};
 };
