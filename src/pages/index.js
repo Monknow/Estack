@@ -46,6 +46,13 @@ const IndexPage = () => {
 
 	const db = getFirestore();
 
+	const visitado = localStorage.getItem("visited");
+
+	if (!visitado) {
+		localStorage.setItem("visited", "true");
+		navigate("/home");
+	}
+
 	useEffect(() => {
 		if (!isLoading && !isLoggedIn) {
 			navigate("/login");
@@ -120,37 +127,46 @@ const IndexPage = () => {
 
 	return (
 		<IndexPageEstilizada>
-			<Helmet>
-				<title>eStack Sharer</title>
-			</Helmet>
-			<Titulo>Looking for a developer?</Titulo>
-			<FormularioBusqueda onSubmit={searchQuery}>
-				<BarraDeBusqueda setConfiguracion={setConfiguracion} elevarInputValue={setInputValue} />
+			{visitado ? (
+				<>
+					<Helmet>
+						<title>eStack Sharer</title>
+					</Helmet>
+					<Titulo>Looking for a developer?</Titulo>
+					<FormularioBusqueda onSubmit={searchQuery}>
+						<BarraDeBusqueda setConfiguracion={setConfiguracion} elevarInputValue={setInputValue} />
 
-				{iniciarBusqueda && (
-					<>
-						{cargando ? (
-							<Cargando />
-						) : (
+						{iniciarBusqueda && (
 							<>
-								{resultados.length !== 0 ? (
-									<>
-										{resultados.map((resultadoDatos) => {
-											return (
-												<ResultadoBusqueda datos={resultadoDatos} key={resultadoDatos.slug} />
-											);
-										})}
-									</>
+								{cargando ? (
+									<Cargando />
 								) : (
 									<>
-										<Titulo>No results found for your search</Titulo>
+										{resultados.length !== 0 ? (
+											<>
+												{resultados.map((resultadoDatos) => {
+													return (
+														<ResultadoBusqueda
+															datos={resultadoDatos}
+															key={resultadoDatos.slug}
+														/>
+													);
+												})}
+											</>
+										) : (
+											<>
+												<Titulo>No results found for your search</Titulo>
+											</>
+										)}
 									</>
 								)}
 							</>
 						)}
-					</>
-				)}
-			</FormularioBusqueda>
+					</FormularioBusqueda>
+				</>
+			) : (
+				<Cargando />
+			)}
 		</IndexPageEstilizada>
 	);
 };

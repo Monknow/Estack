@@ -5,7 +5,7 @@ import SeccionHome from "../components/3-cells/SeccionHome";
 import TransicionPagina from "../components/1-atoms/TransicionPagina";
 import seccionesHome from "../data/seccionesHome";
 
-const IndexPage = () => {
+const HomePage = () => {
 	return (
 		<div>
 			<Helmet>
@@ -34,4 +34,4 @@ const IndexPage = () => {
 	);
 };
 
-export default IndexPage;
+export default HomePage;
