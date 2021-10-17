@@ -46,12 +46,19 @@ const IndexPage = () => {
 
 	const db = getFirestore();
 
-	const visitado = localStorage.getItem("visited");
+	useEffect(()=>{
+		if(window){
+			const visitado = localStorage.getItem("visited");
+	
+			if (!visitado) {
+				localStorage.setItem("visited", "true");
+				navigate("/home");
+			}
+		}
+	}, [])
 
-	if (!visitado) {
-		localStorage.setItem("visited", "true");
-		navigate("/home");
-	}
+
+
 
 	useEffect(() => {
 		if (!isLoading && !isLoggedIn) {
