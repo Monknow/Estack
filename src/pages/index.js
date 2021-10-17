@@ -32,6 +32,7 @@ const FormularioBusqueda = styled.form`
 
 	width: 100%;
 `;
+let visitado;
 
 const IndexPage = () => {
 	const {isLoggedIn, isLoading} = useContext(ContextoAuth);
@@ -46,19 +47,16 @@ const IndexPage = () => {
 
 	const db = getFirestore();
 
-	useEffect(()=>{
-		if(window){
-			const visitado = localStorage.getItem("visited");
-	
+	useEffect(() => {
+		if (window) {
+			visitado = localStorage.getItem("visited");
+
 			if (!visitado) {
 				localStorage.setItem("visited", "true");
 				navigate("/home");
 			}
 		}
-	}, [])
-
-
-
+	}, []);
 
 	useEffect(() => {
 		if (!isLoading && !isLoggedIn) {
